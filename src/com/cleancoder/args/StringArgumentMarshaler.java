@@ -1,25 +1,23 @@
 package com.cleancoder.args;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.cleancoder.args.ArgsException.ErrorCode.MISSING_STRING;
 
-public class StringArgumentMarshaler implements ArgumentMarshaler {
+public class StringArgumentMarshaler implements ArgumentMarshaler<String> {
   private String stringValue = "";
 
-  public void set(Iterator<String> currentArgument) throws ArgsException {
-    try {
-      stringValue = currentArgument.next();
-    } catch (NoSuchElementException e) {
+  @Override
+  public void setValue(final Optional<String> arg) throws ArgsException {
+    if (!arg.isPresent()) {
       throw new ArgsException(MISSING_STRING);
     }
+    stringValue = arg.get();
   }
 
-  public static String getValue(ArgumentMarshaler am) {
-    if (am != null && am instanceof StringArgumentMarshaler)
-      return ((StringArgumentMarshaler) am).stringValue;
-    else
-      return "";
+  @Override
+  public String getValue() {
+    return stringValue;
   }
+
 }

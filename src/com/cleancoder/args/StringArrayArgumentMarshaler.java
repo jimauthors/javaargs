@@ -4,21 +4,20 @@ import static com.cleancoder.args.ArgsException.ErrorCode.*;
 
 import java.util.*;
 
-public class StringArrayArgumentMarshaler implements ArgumentMarshaler {
-  private List<String> strings = new ArrayList<String>();
+public class StringArrayArgumentMarshaler implements ArgumentMarshaler<String[]> {
+  private  List<String> strings = new ArrayList<>();
 
-  public void set(Iterator<String> currentArgument) throws ArgsException {
-    try {
-      strings.add(currentArgument.next());
-    } catch (NoSuchElementException e) {
-      throw new ArgsException(MISSING_STRING);
-    }
+  @Override
+  public void setValue(final Optional<String> arg) throws ArgsException {
+      if (!arg.isPresent()) {
+        throw new ArgsException(MISSING_STRING);
+      }
+      strings.add(arg.get());
   }
 
-  public static String[] getValue(ArgumentMarshaler am) {
-    if (am != null && am instanceof StringArrayArgumentMarshaler)
-      return ((StringArrayArgumentMarshaler) am).strings.toArray(new String[0]);
-    else
-      return new String[0];
+  @Override
+  public String[] getValue() {
+    return strings.toArray(new String[0]);
   }
+
 }

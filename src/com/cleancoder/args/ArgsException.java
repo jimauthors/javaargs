@@ -2,7 +2,7 @@ package com.cleancoder.args;
 
 import static com.cleancoder.args.ArgsException.ErrorCode.*;
 
-public class ArgsException extends Exception {
+public class ArgsException extends RuntimeException {
   private char errorArgumentId = '\0';
   private String errorParameter = null;
   private ErrorCode errorCode = OK;
@@ -74,12 +74,15 @@ public class ArgsException extends Exception {
         return String.format("Could not find map string for -%c.", errorArgumentId);
       case MALFORMED_MAP:
         return String.format("Map string for -%c is not of form k1:v1,k2:v2...", errorArgumentId);
+      case MISSING_VALUE:
+        return String.format("Value for -%c is not provided.", errorArgumentId);
     }
     return "";
   }
 
   public enum ErrorCode {
     OK, INVALID_ARGUMENT_FORMAT, UNEXPECTED_ARGUMENT, INVALID_ARGUMENT_NAME,
+    MISSING_VALUE,
     MISSING_STRING,
     MISSING_INTEGER, INVALID_INTEGER,
     MISSING_DOUBLE, MALFORMED_MAP, MISSING_MAP, INVALID_DOUBLE}

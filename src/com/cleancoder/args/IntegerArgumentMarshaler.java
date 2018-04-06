@@ -4,25 +4,24 @@ import static com.cleancoder.args.ArgsException.ErrorCode.*;
 
 import java.util.*;
 
-public class IntegerArgumentMarshaler implements ArgumentMarshaler {
-  private int intValue = 0;
+public class IntegerArgumentMarshaler implements ArgumentMarshaler<Integer> {
+  private Integer intValue = 0;
 
-  public void set(Iterator<String> currentArgument) throws ArgsException {
-    String parameter = null;
-    try {
-      parameter = currentArgument.next();
-      intValue = Integer.parseInt(parameter);
-    } catch (NoSuchElementException e) {
+  @Override
+  public void setValue(final Optional<String> arg) throws ArgsException {
+    if (!arg.isPresent()) {
       throw new ArgsException(MISSING_INTEGER);
+    }
+    try {
+      intValue = Integer.parseInt(arg.get());
     } catch (NumberFormatException e) {
-      throw new ArgsException(INVALID_INTEGER, parameter);
+      throw new ArgsException(INVALID_INTEGER, arg.get());
     }
   }
 
-  public static int getValue(ArgumentMarshaler am) {
-    if (am != null && am instanceof IntegerArgumentMarshaler)
-      return ((IntegerArgumentMarshaler) am).intValue;
-    else
-      return 0;
+  @Override
+  public Integer getValue() {
+      return intValue;
   }
+
 }
